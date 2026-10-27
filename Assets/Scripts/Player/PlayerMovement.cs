@@ -6,6 +6,7 @@ using Zenject;
 public class PlayerMovement : MonoBehaviour
 {
     [Inject] InputsManager inputs;
+    [Inject] AudioManager audioManager;
     private Rigidbody rb;
 
 
@@ -23,8 +24,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float recenterTime;
     [SerializeField] private Ease recenterEase;
+
+    [Header("Recenter")]
     private bool can_Rotate;
     private bool recentering;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioClip leftClip;
+    [SerializeField] private AudioClip rightClip;
 
     public Transform leftLimit, rightLimit;
 
@@ -47,6 +55,10 @@ public class PlayerMovement : MonoBehaviour
             Debug.LogError("Recentering");
             recentering = true;
             Tween.PositionX(transform, 0, recenterTime, recenterEase).OnComplete(() => recentering = false);
+        }
+        else
+        {
+            audioManager.PlaySound(sfxSource, transform.eulerAngles.z > leftLimit.eulerAngles.z ? leftClip : transform.eulerAngles.z < rightLimit.eulerAngles.z ? rightClip : null);
         }
 
         if (!can_Rotate) { return; }

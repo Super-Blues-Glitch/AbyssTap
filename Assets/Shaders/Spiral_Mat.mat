@@ -41,7 +41,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Speed: 1
-    - _SpriralStreght: 135.07
+    - _SpriralStreght: 95.96
     m_Colors:
     - _FloorColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpriralColor: {r: 0, g: 12.09132, b: 32, a: 1}
