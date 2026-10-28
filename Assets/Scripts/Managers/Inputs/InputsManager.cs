@@ -37,6 +37,23 @@ public class InputsManager : MonoBehaviour
                     break;
                 }
             break;
+
+            case GameEnums.InputKey.Jump:
+                switch (phase)
+                {
+                    case InputActionPhase.Started:
+                        inputs.Player.Jump.started += func;
+                        break;
+
+                    case InputActionPhase.Performed:
+                        inputs.Player.Jump.performed += func;
+                        break;
+
+                    case InputActionPhase.Canceled:
+                        inputs.Player.Jump.canceled += func;
+                        break;
+                }
+                break;
         }
     }
 
@@ -57,6 +74,23 @@ public class InputsManager : MonoBehaviour
 
                     case InputActionPhase.Canceled:
                         inputs.Player.Move.canceled -= func;
+                        break;
+                }
+                break;
+
+            case GameEnums.InputKey.Jump:
+                switch (phase)
+                {
+                    case InputActionPhase.Started:
+                        inputs.Player.Jump.started -= func;
+                        break;
+
+                    case InputActionPhase.Performed:
+                        inputs.Player.Jump.performed -= func;
+                        break;
+
+                    case InputActionPhase.Canceled:
+                        inputs.Player.Jump.canceled -= func;
                         break;
                 }
                 break;

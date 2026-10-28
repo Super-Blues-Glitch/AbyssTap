@@ -9,8 +9,9 @@ public class AudioManager : MonoBehaviour
     {
         source.Stop();
         source.clip = clip;
-        source.Play();
         source.loop = loop;
+        source.Play();
+        Debug.LogWarning("Se puso a sonar");
     }
 
     public void StopSound(AudioSource source)

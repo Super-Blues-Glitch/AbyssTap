@@ -6,35 +6,22 @@ using Zenject;
 public class PlayerMovement : MonoBehaviour
 {
     [Inject] InputsManager inputs;
-    [Inject] AudioManager audioManager;
-    private Rigidbody rb;
+    Rigidbody rb;
 
+    private Vector2 movement;
+    [SerializeField] private Vector3 targetRotation;
+    [SerializeField] private float rotationSpeed;
+    [SerializeField] private Ease rotationEase;
+    private string rotDir;
 
-    [Header("Swinging")]
-    [SerializeField] private float swingingForce;
-    [SerializeField] private float swingingTime;
-    [SerializeField] private Ease swingingEase;
-    [SerializeField] private float swingingForceIncreasement;
-    [SerializeField] private float angleToActivateXMoveRight;
-    [SerializeField] private float angleToActivateXMoveLeft;
-    private float ForceValue;
+    [SerializeField] private float speed;
 
-    [Header("Movement")]
-    [SerializeField] private Vector2 movement;
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float recenterTime;
-    [SerializeField] private Ease recenterEase;
-
-    [Header("Recenter")]
-    private bool can_Rotate;
-    private bool recentering;
-
-    [Header("Audio")]
-    [SerializeField] private AudioSource sfxSource;
-    [SerializeField] private AudioClip leftClip;
-    [SerializeField] private AudioClip rightClip;
-
-    public Transform leftLimit, rightLimit;
+    [Header("Jump")]
+    [SerializeField] private float jumpForce;
+    [SerializeField] private Transform boxPos;
+    [SerializeField] private Vector3 boxSize;
+    [SerializeField] private LayerMask boxLayer;
+    bool grounded;
 
     private void Awake()
     {
@@ -43,37 +30,48 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        inputs.Subscribe(GameEnums.InputKey.Move, InputActionPhase.Canceled, ApplyForce);
+        inputs.Subscribe(GameEnums.InputKey.Jump, InputActionPhase.Started, Jump);
+    }
+
+    private void OnDisable()
+    {
+        inputs.Unsubscribe(GameEnums.InputKey.Jump, InputActionPhase.Started, Jump);
     }
 
     private void Update()
     {
         movement = inputs.GetMoveValue();
 
-        if (transform.eulerAngles.z <= leftLimit.eulerAngles.z || transform.eulerAngles.z >= rightLimit.eulerAngles.z)
-        {
-            Debug.LogError("Recentering");
-            recentering = true;
-            Tween.PositionX(transform, 0, recenterTime, recenterEase).OnComplete(() => recentering = false);
-        }
-        else
-        {
-            audioManager.PlaySound(sfxSource, transform.eulerAngles.z > leftLimit.eulerAngles.z ? leftClip : transform.eulerAngles.z < rightLimit.eulerAngles.z ? rightClip : null);
-        }
+        if (movement == Vector2.zero) { return; }
 
-        if (!can_Rotate) { return; }
-        transform.eulerAngles = new(transform.localEulerAngles.x, transform.localEulerAngles.y, transform.localEulerAngles.z + (ForceValue * Time.deltaTime));
-
+        if (Mathf.Sign(movement.x) == -1 && transform.eulerAngles.y != 180 && rotDir != "L")
+        {
+            rotDir = "L";
+            Tween.Rotation(transform, targetRotation, rotationSpeed, rotationEase);
+        }
+        else if (Mathf.Sign(movement.x) == 1 && transform.eulerAngles.y != 0 && rotDir != "R")
+        {
+            rotDir = "R";
+            Tween.Rotation(transform, Vector3.zero, rotationSpeed, rotationEase);
+        }
     }
 
-    private void ApplyForce(InputAction.CallbackContext ctx)
+    private void FixedUpdate()
     {
-        can_Rotate = false;
-        ForceValue = (swingingForce * -movement.x);
-        Vector3 newRotation = new(transform.localEulerAngles.x, transform.localEulerAngles.y, transform.localEulerAngles.z + ForceValue);
-        Tween.Rotation(transform, newRotation, swingingTime, swingingEase).OnComplete(() => can_Rotate = true);
-        swingingForce += swingingForceIncreasement;
+        rb.linearVelocity = new(rb.linearVelocity.x, rb.linearVelocity.y, movement.x * speed);
+        grounded = Physics.OverlapBox(boxPos.position, boxSize, Quaternion.identity, boxLayer).Length > 0 ? true : false;
+    }
 
-        rb.linearVelocity = new(rb.linearVelocity.x, rb.linearVelocity.y, Mathf.Abs(movement.x * moveSpeed));
+    private void Jump(InputAction.CallbackContext ctx)
+    {
+        if (!grounded) { return; }
+
+        rb.AddForce(new(0, jumpForce), ForceMode.Impulse);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(boxPos.position, boxSize);
     }
 }

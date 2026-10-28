@@ -4,6 +4,11 @@ public static class GameEnums
 {
     public enum InputKey
     {
-        Move
+        Move, Jump
+    }
+
+    public enum CollisionType
+    {
+        CollEnter, CollStay, CollExit, TriggerEnter, TriggerStay, TriggerExit
     }
 }
