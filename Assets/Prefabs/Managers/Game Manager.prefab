@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 471649b96962c3744aa876f98a35096c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  time: 60
+  time: 10
 --- !u!114 &4092999870001634813
 MonoBehaviour:
   m_ObjectHideFlags: 0

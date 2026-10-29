@@ -8,6 +8,7 @@ public class PlayerCordMovement : MonoBehaviour
 {
     [Inject] InputsManager inputs;
     [Inject] AudioManager audioManager;
+    [Inject] GameManager game;
     private Rigidbody rb;
 
     [SerializeField] private float angle;
@@ -66,6 +67,7 @@ public class PlayerCordMovement : MonoBehaviour
     [SerializeField] GameObject check;
     private Tween revoTween;
     private bool rebobinating;
+    private bool stop;
 
     private void Awake()
     {
@@ -88,6 +90,8 @@ public class PlayerCordMovement : MonoBehaviour
 
     private void Update()
     {
+        stop = game.time <= 0;
+        if (stop ) { return; }
         movement = inputs.GetMoveValue();
 
 

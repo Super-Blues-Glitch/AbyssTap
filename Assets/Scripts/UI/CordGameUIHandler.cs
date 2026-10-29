@@ -17,10 +17,11 @@ public class CordGameUIHandler : MonoBehaviour
     [SerializeField] private Ease appearigEase;
 
     [SerializeField] private Button restart, exit;
+    bool su;
 
     private void Start()
     {
-        restart.onClick.AddListener(() => scenes.ChangeScene(""));
+        restart.onClick.AddListener(() => scenes.ChangeScene("Cord"));
         exit.onClick.AddListener(() =>
         {
             scenes.ChangeScene("MainMenu");
@@ -29,9 +30,10 @@ public class CordGameUIHandler : MonoBehaviour
 
     private void Update()
     {
-        if (game.time <= 0)
+        if (game.time <= 0 && !su)
         {
-            ChangeScreen(endScreen, () => Time.timeScale = 0);
+            su = true;
+            ChangeScreen(endScreen, () => Debug.Log("s"));
         }
     }
 
