@@ -91,7 +91,11 @@ public class PlayerCordMovement : MonoBehaviour
     private void Update()
     {
         stop = game.time <= 0;
-        if (stop ) { return; }
+        if (stop ) 
+        {
+            rb.useGravity = false;
+            return; 
+        }
         movement = inputs.GetMoveValue();
 
 
