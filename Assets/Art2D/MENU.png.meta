@@ -113,12 +113,12 @@ TextureImporter:
       name: MENU_0
       rect:
         serializedVersion: 2
-        x: 2807
-        y: 10565
-        width: 8011
-        height: 4509
+        x: 2820
+        y: 10574
+        width: 7983
+        height: 4482
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -140,7 +140,7 @@ TextureImporter:
         width: 6329
         height: 4630
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,7 +162,7 @@ TextureImporter:
         width: 6443
         height: 4818
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,7 +184,7 @@ TextureImporter:
         width: 3195
         height: 4649
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,7 +206,7 @@ TextureImporter:
         width: 1492
         height: 400
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -215,6 +215,72 @@ TextureImporter:
       bones: []
       spriteID: 95870a6f01de5ad4cbf04d041254c2a2
       internalID: 2044478696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MENU_5
+      rect:
+        serializedVersion: 2
+        x: 15473
+        y: 12117
+        width: 844
+        height: 855
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8054f228e5ff5e94fa84beff27363e75
+      internalID: 2018510895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MENU_6
+      rect:
+        serializedVersion: 2
+        x: 16523
+        y: 13152
+        width: 836
+        height: 857
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f985335428893dd409b5b06c8f0d6328
+      internalID: 1060402193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MENU_7
+      rect:
+        serializedVersion: 2
+        x: 16413
+        y: 14096
+        width: 850
+        height: 858
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c75e79c3f8793a641add746aba804446
+      internalID: -1312753499
       vertices: []
       indices: 
       edges: []
@@ -238,6 +304,9 @@ TextureImporter:
       MENU_2: -279538150
       MENU_3: -875859902
       MENU_4: 2044478696
+      MENU_5: 2018510895
+      MENU_6: 1060402193
+      MENU_7: -1312753499
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

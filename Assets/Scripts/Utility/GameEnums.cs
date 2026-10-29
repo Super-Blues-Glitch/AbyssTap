@@ -11,4 +11,12 @@ public static class GameEnums
     {
         CollEnter, CollStay, CollExit, TriggerEnter, TriggerStay, TriggerExit
     }
+
+    public struct Audio
+    {
+        public enum AudioChannel
+        {
+            Master, Music, SFX, Voices
+        }
+    }
 }

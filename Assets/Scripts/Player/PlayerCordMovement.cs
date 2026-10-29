@@ -1,4 +1,5 @@
 using PrimeTween;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
@@ -8,7 +9,6 @@ public class PlayerCordMovement : MonoBehaviour
     [Inject] InputsManager inputs;
     [Inject] AudioManager audioManager;
     private Rigidbody rb;
-    private Rebobinator revo;
 
     [SerializeField] private float angle;
 
@@ -45,18 +45,31 @@ public class PlayerCordMovement : MonoBehaviour
     [SerializeField] private AudioClip leftClip;
     [SerializeField] private AudioClip rightClip;
 
-    [Header("Limits")]
+    [SerializeField] private float decreaseVolumeSpeed;
+    [SerializeField] private Ease decreaseVolumeEase;
+
 
     [Header("Push")]
-    [SerializeField] private Transform pusherLeft, pusherRight;
+    [SerializeField] private float angleToPush;
     [SerializeField] private float pushForce;
     [SerializeField] private float pushTime;
     [SerializeField] private Ease pushEase;
 
+    [Header("Rebobine")]
+    [SerializeField] private Transform height;
+    [SerializeField] private Transform position;
+    [SerializeField] private float revoDelayTime;
+    [SerializeField] private float revoHeigthTime;
+    [SerializeField] private float revoPosTime;
+    [SerializeField] private float revoRotTime;
+    [SerializeField] private Ease revoEase;
+    [SerializeField] GameObject check;
+    private Tween revoTween;
+    private bool rebobinating;
+
     private void Awake()
     {
         TryGetComponent(out rb);
-        TryGetComponent(out revo);
 
         initialswingingForce = swingingForce;
     }
@@ -64,32 +77,37 @@ public class PlayerCordMovement : MonoBehaviour
     private void OnEnable()
     {
         inputs.Subscribe(GameEnums.InputKey.Move, InputActionPhase.Canceled, ApplyForce);
-        revo.RevoDone += Restart;
+        
     }
 
     private void OnDisable()
     {
         inputs.Unsubscribe(GameEnums.InputKey.Move, InputActionPhase.Canceled, ApplyForce);
-        revo.RevoDone -= Restart;
+        revoTween.timeScale = 0;
     }
 
     private void Update()
     {
         movement = inputs.GetMoveValue();
 
+
         angle = Quaternion.Angle(transform.rotation, center.rotation);
         angle *= transform.eulerAngles.z < 180 ? 1 : -1;
 
-        pusherLeft.position = new(pusherLeft.position.x, pusherLeft.position.y, transform.position.z);
-        pusherRight.position = new(pusherRight.position.x, pusherRight.position.y, transform.position.z);
+        if (!rebobinating)
+        {
+            height.position = new(-1.312f * Mathf.Sign(angle), height.position.y, transform.position.z);
+            position.position = new(position.position.x, position.position.y, transform.position.z);
+        }
 
-        if (Mathf.Abs(angle) < angleToRecenter && !recentering)
+        if (Mathf.Abs(angle) < angleToRecenter && !recentering )
         {
             recentering = true;
             Tween.PositionX(transform, 0, recenterTime, recenterEase).OnComplete(() => recentering = false);
         }
 
         Screams();
+        Push();
 
         if (!can_Rotate || !on_cord) { return; }
         transform.eulerAngles = new(transform.localEulerAngles.x, transform.localEulerAngles.y, transform.localEulerAngles.z + (ForceValue * Time.deltaTime));
@@ -98,10 +116,12 @@ public class PlayerCordMovement : MonoBehaviour
 
     public void Push()
     {
+        if (rebobinating) { return; }
+
+        if (Mathf.Abs(angle) < angleToPush) { return; }
         can_Rotate = false;
         recentering = true;
         Tween.PositionX(transform, Mathf.Sign(angle) == -1 ? transform.position.x + pushForce : transform.position.x - pushForce, pushTime, pushEase);
-        Screams();
     }
 
     private void FixedUpdate()
@@ -111,21 +131,25 @@ public class PlayerCordMovement : MonoBehaviour
 
     private void Screams()
     {
+        if (rebobinating) { return; }
+
         if (Mathf.Abs(angle) < angleToRecenter) 
-        { 
-            audioManager.StopSound(sfxSourceL);
-            audioManager.StopSound(sfxSourceR);
-            playing = false;
+        {
+            if (playing)
+            {
+                audioManager.StopSound(sfxSourceL, decreaseVolumeSpeed, decreaseVolumeEase);
+                audioManager.StopSound(sfxSourceR, decreaseVolumeSpeed, decreaseVolumeEase);
+                playing = false;
+            }
             return; 
         }
-        Debug.LogWarning("Sonando");
 
-        if (Mathf.Sign(angle) == 1)
+        if (Mathf.Sign(angle) == 1 && !playing)
         {
             playing = true;
             audioManager.PlaySound(sfxSourceL, leftClip, true);
         }
-        else
+        else if (Mathf.Sign(angle) == -1 && !playing)
         {
             playing = true;
             audioManager.PlaySound(sfxSourceR, rightClip, true);
@@ -135,7 +159,7 @@ public class PlayerCordMovement : MonoBehaviour
 
     private void ApplyForce(InputAction.CallbackContext ctx)
     {
-        if (!on_cord) { return; }
+        if (!on_cord || rebobinating) { return; }
 
         can_Rotate = false;
         ForceValue = (swingingForce * -movement.x);
@@ -146,10 +170,29 @@ public class PlayerCordMovement : MonoBehaviour
         rb.linearVelocity = new(rb.linearVelocity.x, rb.linearVelocity.y, Mathf.Abs(movement.x * moveSpeed));
     }
 
-    private void Restart()
+    public void Restart()
     {
-        swingingForce = initialswingingForce;
-        ForceValue = 0;
+        rebobinating = true;
+        check.SetActive(false);
+        Debug.Log("The Revo");
+        rb.useGravity = false;
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+
+        revoTween = Tween.Position(transform, height.position, revoHeigthTime, revoEase, 1, CycleMode.Restart, revoDelayTime).OnComplete(() =>
+        {
+            Tween.Position(transform, position.position, revoPosTime, revoEase).OnComplete(() =>
+            {
+                Tween.Rotation(transform, Vector3.zero, revoRotTime, revoEase).OnComplete(() =>
+                {
+                    swingingForce = initialswingingForce;
+                    ForceValue = 0;
+                    rb.useGravity = true;
+                    rb.constraints = RigidbodyConstraints.FreezeRotation;
+                    check.SetActive(true);
+                    rebobinating = false;
+                });
+            });
+        });
     }
 
     private void OnDrawGizmos()
