@@ -12,7 +12,7 @@ public class HudUIHandler : MonoBehaviour
 
     private void Start()
     {
-        pauseBT.onClick.AddListener(() => cordUI.ChangeScreen(pauseImage));
+        pauseBT.onClick.AddListener(() => cordUI.ChangeScreen(pauseImage, null));
     }
 
     public void UpdateDistance(string newDistance)

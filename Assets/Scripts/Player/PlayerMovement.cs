@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask boxLayer;
     bool grounded;
 
+    Vector3 startPosition;
+
     private void Awake()
     {
         TryGetComponent(out rb);
@@ -30,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        startPosition = transform.position;
         inputs.Subscribe(GameEnums.InputKey.Jump, InputActionPhase.Started, Jump);
     }
 
@@ -67,6 +70,12 @@ public class PlayerMovement : MonoBehaviour
         if (!grounded) { return; }
 
         rb.AddForce(new(0, jumpForce), ForceMode.Impulse);
+    }
+
+    public void Restart()
+    {
+        transform.position = startPosition;
+        rb.linearVelocity = Vector3.zero;
     }
 
     private void OnDrawGizmos()

@@ -9,13 +9,13 @@ public class MainMenuUIController : MonoBehaviour
 
     [Header("Screens")]
     [SerializeField] private Image current;
-    [SerializeField] private Image mainScreen, storyScreen, instructionsScreen, optionsScreen;
+    [SerializeField] private Image mainScreen, storyScreen, instructionsScreen;
     [SerializeField] private float appearigTime;
     [SerializeField] private Ease appearigEase;
 
     [Header("Main")]
     [SerializeField] private Button playBT;
-    [SerializeField] private Button optionsBT, exitBT;
+    [SerializeField] private Button exitBT;
 
     [Header("Play")]
     [SerializeField] private Button exitStoryBT;
@@ -32,7 +32,6 @@ public class MainMenuUIController : MonoBehaviour
         scenes.FadeIn();
 
         playBT.onClick.AddListener(() => ChangeScreen(storyScreen));
-        optionsBT.onClick.AddListener(() => ChangeScreen(optionsScreen));
         exitBT.onClick.AddListener(Exit);
 
         exitStoryBT.onClick.AddListener(() => ChangeScreen(mainScreen));
