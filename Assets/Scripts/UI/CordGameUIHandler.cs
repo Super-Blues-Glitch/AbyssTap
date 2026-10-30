@@ -21,7 +21,11 @@ public class CordGameUIHandler : MonoBehaviour
 
     private void Start()
     {
-        restart.onClick.AddListener(() => scenes.ChangeScene("Cord"));
+        restart.onClick.AddListener(() =>
+        {
+            game.time = 60;
+            scenes.ChangeScene("Cord");
+            });
         exit.onClick.AddListener(() =>
         {
             scenes.ChangeScene("MainMenu");

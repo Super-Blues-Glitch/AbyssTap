@@ -42,5 +42,6 @@ public class CordGameController : MonoBehaviour
     public void ToMiniGame()
     {
         scenes.ChangeSceneAdditive("MiniGame1");
+        game.onMini = true;
     }
 }

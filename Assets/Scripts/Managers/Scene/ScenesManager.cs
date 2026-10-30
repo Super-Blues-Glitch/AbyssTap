@@ -25,14 +25,14 @@ public class ScenesManager : MonoBehaviour
 
     public void ChangeSceneAdditive(string sceneName)
     {
-        changing = true;
+        //changing = true;
         fadeImg.raycastTarget = true;
         FadeOut(() => StartCoroutine(ChangeAdditive(sceneName)));
     }
 
     public void UnloadScene(string sceneName)
     {
-        changing = true;
+        //changing = true;
         fadeImg.raycastTarget = true;
         FadeOut(() => StartCoroutine(UnloadAdditive(sceneName)));
     }
@@ -41,14 +41,14 @@ public class ScenesManager : MonoBehaviour
     {
         AsyncOperation change = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         yield return change;
-        changing = false;
+        //changing = false;
     }
 
     public IEnumerator UnloadAdditive(string sceneName)
     {
         AsyncOperation change = SceneManager.UnloadSceneAsync(sceneName);
         yield return change;
-        FadeIn(() => changing = false);
+        FadeIn();
     }
 
     public void FadeOut(Action func = null)

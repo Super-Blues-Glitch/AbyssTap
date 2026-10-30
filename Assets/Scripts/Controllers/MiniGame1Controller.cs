@@ -26,5 +26,6 @@ public class MiniGame1Controller : MonoBehaviour
         }
 
         scenes.UnloadScene("MiniGame1");
+        game.onMini = false;
     }
 }

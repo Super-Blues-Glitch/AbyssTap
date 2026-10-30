@@ -3,6 +3,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public float time;
+    public bool onMini;
 
     private void Start()
     {
